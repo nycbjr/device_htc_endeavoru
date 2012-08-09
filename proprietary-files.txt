@@ -1,12 +1,6 @@
 # ril
-lib/librilpos.so
+bin/rild
 lib/libhtc_ril.so
-
-# WVM
-lib/libWVStreamControlAPI_L1.so
-lib/libwvm.so
-lib/libwvdrm_L1.so
-lib/drm/libdrmwvmplugin.so
 
 # nfc
 etc/nfcee_access.xml
@@ -16,7 +10,6 @@ lib/libpn544_fw.so
 usr/keylayout/tegra-kbc.kl
 
 # agps
-bin/rilposd
 bin/RXN_IntApp
 etc/gps/agps.truststore
 etc/gps/agps.truststore_lab
@@ -43,10 +36,6 @@ etc/firmware/TIInit_10.4.27.bts
 etc/firmware/TIInit_10.5.20.bts
 etc/firmware/TIInit_10.6.15.bts
 etc/firmware/WL128x_2.21_1.1.bts
-etc/firmware/fm_rx_init_1283.1.bts
-etc/firmware/fm_rx_init_1283.2.bts
-etc/firmware/fmc_init_1283.1.bts
-etc/firmware/fmc_init_1283.2.bts
 
 # voicemail
 etc/voicemail-conf.xml
@@ -78,11 +67,6 @@ bin/mknod
 etc/Flash_Loader.conf
 etc/QUO_6260.fls.clean
 
-# FM Radio
-lib/libfmchr.so
-lib/libfmradio.so
-lib/libfmstack.so
-
 # graphics
 lib/libcgdrv.so
 lib/libnvos.so
@@ -107,6 +91,10 @@ lib/libnvtestresults.so
 lib/libnvtvmr.so
 lib/libnvwinsys.so
 lib/libnvwsi.so
+
+# sound
+lib/libasound.so
+
 
 # egl
 lib/egl/libEGL_tegra.so
@@ -157,7 +145,6 @@ etc/firmware/ti-connectivity/wl128x-fw-4-mr.bin
 etc/firmware/ti-connectivity/wl128x-fw-4-sr.bin
 etc/firmware/ti-connectivity/wl128x-fw-mr.bin.r4
 etc/firmware/ti-connectivity/wl128x-fw-mr.bin.r5
-bin/calibrator
 
 # stagefright
 lib/libstagefrighthw.so
@@ -245,7 +232,6 @@ bin/htcbatt
 lib/libnvcontrol_jni.so
 lib/libnvcpud.so
 lib/libnvcpud_client.so
-lib/libsurfaceflinger_client.so
 
 # image stabilization
 lib/libhtc_dis.so
@@ -259,9 +245,6 @@ lib/libhtcsurfaces.so
 # audio
 lib/libcall_volume.so
 lib/libbt-aptx-4.0.3.so
-lib/libasound.so
-lib/libsrsprocessing.so
-lib/libsrscorehtc.so
 
 lib/libmllite.so
 lib/libmlplatform.so
@@ -269,11 +252,13 @@ lib/libmpl.so
 lib/libmpl_jni.so
 
 lib/hw/camera.tegra.so
-lib/hw/audio.primary.tegra.so
-lib/hw/audio_policy.tegra.so
 lib/hw/gralloc.tegra.so
 lib/hw/hwcomposer.tegra.so
+lib/hw/audio.primary.tegra.so
+lib/hw/audio_policy.tegra.so
 lib/hw/gps.tegra.so
 lib/hw/hwcomposer.tegra.so
 lib/hw/nfc.endeavoru.so
 lib/hw/sensors.endeavoru.so
+
+app/PGPSDownloader.apk
