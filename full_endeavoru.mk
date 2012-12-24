@@ -232,3 +232,10 @@ PRODUCT_LOCALES += en_US xhdpi
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product-if-exists, vendor/htc/endeavoru/endeavoru-vendor.mk)
 $(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
+
+## Device identifier. This must come after all inclusions
+PRODUCT_DEVICE := endeavoru
+PRODUCT_NAME := full_endeavoru
+PRODUCT_BRAND := htc_europe
+PRODUCT_MODEL := HTC One X
+PRODUCT_MANUFACTURER := HTC
