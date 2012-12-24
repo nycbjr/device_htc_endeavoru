@@ -36,6 +36,7 @@ TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_ARCH_VARIANT_CPU := cortex-a9
 TARGET_CPU_SMP := true
+TARGET_ARCH := arm
 ARCH_ARM_HAVE_TLS_REGISTER := true
 
 # Board nameing
