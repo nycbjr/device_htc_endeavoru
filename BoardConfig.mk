@@ -17,6 +17,9 @@
 # Skip droiddoc build to save build time
 BOARD_SKIP_ANDROID_DOC_BUILD := true
 
+TARGET_GLOBAL_CFLAGS += $(call-cc-option,-mfpu=neon) $(call-cc-option,-mfloat-abi=softfp)
+TARGET_GLOBAL_CPPFLAGS += $(call-cc-option,-mfpu=neon) $(call-cc-option,-mfloat-abi=softfp)
+
 # cpu info
 BOARD_HAS_LOCKED_BOOTLOADER := true
 TARGET_NO_BOOTLOADER := true
@@ -30,15 +33,23 @@ ARCH_ARM_HAVE_NEON := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
 ARCH_ARM_HAVE_32_BYTE_CACHE_LINES := true
 
+# Linaro fixes
+# USE_OLD_MEMCPY := true
+USE_MORE_OPT_FLAGS := yes
+DEBUG_NO_STDCXX11 := yes
+# DEBUG_NO_STRICT_ALIASING := yes
+
 # use endeavor init script
 TARGET_PROVIDES_INIT_TARGET_RC := true
 
 # vold
 BOARD_VOLD_MAX_PARTITIONS := 20
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
+BOARD_SDCARD_INTERNAL_DEVICE := /dev/block/mmcblk0p14
+BOARD_HAS_SDCARD_INTERNAL := true
 
 # USB
-TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/fsl-tegra-udc/gadget/lun
+TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/tegra-udc.0/gadget/lun0/file"
 
 # Lights
 TARGET_PROVIDES_LIBLIGHTS := true
@@ -55,9 +66,26 @@ TARGET_NO_RADIOIMAGE := true
 TARGET_BOOTLOADER_BOARD_NAME := endeavoru
 TARGET_BOARD_PLATFORM := tegra
 TARGET_TEGRA_VERSION := t30
-BASE_CFLAGS := -mfpu=neon -mfloat-abi=softfp
-TARGET_GLOBAL_CFLAGS += $(BASE_CFLAGS)
-TARGET_GLOBAL_CPPFLAGS += $(BASE_CFLAGS)
+
+ifneq ($(USE_MORE_OPT_FLAGS),yes)
+# Extra CFLAGS
+TARGET_EXTRA_CFLAGS :=	$(call-cc-option,-fsanitize=address) \
+$(call-cc-option,-fsanitize=thread) \
+$(call-cc-option,-mcpu=cortex-a9) \
+$(call-cc-option,-mfpu=neon) \
+$(call-cc-option,-mtune=cortex-a9) \
+-fgcse-after-reload \
+-finline-functions \
+-fipa-cp-clone \
+-fpredictive-commoning \
+-fvect-cost-model
+# Extra CPPFLAGS
+  TARGET_EXTRA_CPPFLAGS :=	$(call-cpp-option,-fsanitize=address) \
+$(call-cpp-option,-fsanitize=thread) \
+$(call-cpp-option,-mcpu=cortex-a9) \
+$(call-cpp-option,-mfpu=neon) \
+$(call-cpp-option,-mtune=cortex-a9)
+endif
 
 # Assert
 TARGET_OTA_ASSERT_DEVICE := endeavoru
@@ -69,12 +97,12 @@ BOARD_ALLOW_SUSPEND_IN_CHARGER := true
 NEED_WORKAROUND_CORTEX_A9_745320 := true
 
 # Media
-#BOARD_USES_HW_MEDIARECORDER := true
-#BOARD_USES_HW_MEDIAPLUGINS := true
+BOARD_USES_HW_MEDIARECORDER := true
+BOARD_USES_HW_MEDIAPLUGINS := true
 
 # Enable WEBGL in WebKit
 ENABLE_WEBGL := true
-#WEBCORE_ACCELERATED_SCROLLING := true
+WEBCORE_ACCELERATED_SCROLLING := true
 
 # Graphics
 BOARD_EGL_CFG := device/htc/endeavoru/configs/egl.cfg
@@ -86,10 +114,11 @@ TARGET_HAS_WAITFORVSYNC := true
 TARGET_HAVE_HDMI_OUT := true
 TARGET_USES_GL_VENDOR_EXTENSIONS := true
 USE_OPENGL_RENDERER := true
+BOARD_EGL_NEEDS_LEGACY_FB := true
 
 # Graphics - Skia
 BOARD_USE_SKIA_LCDTEXT := true
-#BOARD_USES_SKIAHWJPEG := true
+BOARD_USES_SKIAHWJPEG := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
@@ -120,21 +149,23 @@ COMMON_GLOBAL_CFLAGS += -DICS_AUDIO_BLOB
 
 # Connectivity - Wi-Fi
 USES_TI_MAC80211 := true
-WIFI_BAND := 802_11_ABGN
+ifdef USES_TI_MAC80211
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
-WPA_SUPPLICANT_VERSION := VER_0_8_X
-BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_wl12xx
+WPA_SUPPLICANT_VERSION := VER_0_8_X_TI
 BOARD_HOSTAPD_DRIVER := NL80211
-BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_wl12xx
 BOARD_WLAN_DEVICE := wl12xx_mac80211
 BOARD_SOFTAP_DEVICE := wl12xx_mac80211
 WIFI_DRIVER_MODULE_PATH := "/system/lib/modules/wl12xx_sdio.ko"
 WIFI_DRIVER_MODULE_NAME := "wl12xx_sdio"
 WIFI_FIRMWARE_LOADER := ""
 COMMON_GLOBAL_CFLAGS += -DUSES_TI_MAC80211
+endif
 
 # Assert
 TARGET_OTA_ASSERT_DEVICE := endeavoru
 
 # Kernel building
 TARGET_USE_PREBUILT_KERNEL := true
+
+# Releasetools
+TARGET_RELEASETOOLS_EXTENSIONS := device/htc/endeavoru

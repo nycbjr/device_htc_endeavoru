@@ -21,15 +21,6 @@ endif
 
 DEVICE_PACKAGE_OVERLAYS := $(LOCAL_PATH)/overlay
 
-# Set secure on user builds
-ifeq ($(TARGET_BUILT_VARIANT),user)
-ADDITIONAL_DEFAULT_PROPERTIES += \
-	ro.secure=1
-else
-ADDITIONAL_DEFAULT_PROPERTIES += \
-	ro.secure=0
-endif
-
 # This device is xhdpi.
 PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
@@ -42,8 +33,11 @@ PRODUCT_COPY_FILES := \
 	$(LOCAL_PATH)/ramdisk/init.usb.rc:root/init.usb.rc \
 	$(LOCAL_PATH)/ramdisk/init.endeavoru.rc:root/init.endeavoru.rc \
 	$(LOCAL_PATH)/ramdisk/ueventd.endeavoru.rc:root/ueventd.endeavoru.rc \
+        $(LOCAL_PATH)/ramdisk/fstab.endeavoru.ext4:root/fstab.endeavoru.ext4 \
+        $(LOCAL_PATH)/ramdisk/fstab.endeavoru.vfat:root/fstab.endeavoru.vfat \
         $(LOCAL_PATH)/ramdisk/fstab.endeavoru:root/fstab.endeavoru \
-        $(LOCAL_PATH)/ramdisk/endeavoru_mounthelper.sh:root/endeavoru_mounthelper.sh
+        $(LOCAL_PATH)/ramdisk/wifi_loader.sh:root/wifi_loader.sh \
+        $(LOCAL_PATH)/ramdisk/init:root/init
 
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/configs/gps.conf:system/etc/gps.conf \
@@ -77,9 +71,13 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/vold.fstab:system/etc/vold.fstab
 
+# video
+PRODUCT_PACKAGES += \
+        libstagefrighthw
+
 # Lights
 PRODUCT_PACKAGES += \
-	lights.endeavoru
+	lights.tegra
 
 # Keyboard
 PRODUCT_COPY_FILES += \
@@ -121,10 +119,6 @@ PRODUCT_PACKAGES += \
 	libbt-vendor \
 	hox-uim-sysfs
 
-# NFC firmware
-PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/prebuilt/lib/libpn544_fw.so:system/vendor/firmware/libpn544_fw.so
-
 # Filesystem management tools
 PRODUCT_PACKAGES += \
 	make_ext4fs \
@@ -133,7 +127,12 @@ PRODUCT_PACKAGES += \
 # Custom Packages
 PRODUCT_PACKAGES += \
         Music \
-        CMFileManager
+        CMFileManager \
+        CellBroadcastReceiver \
+        Apollo \
+        DSPManager \
+        libcyanogen-dsp \
+        audio_effects.conf
 
 # Increase the HWUI font cache
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -143,6 +142,16 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Power
 PRODUCT_PACKAGES += \
         power.endeavoru
+
+# init.d support
+PRODUCT_COPY_FILES += \
+        $(LOCAL_PATH)/prebuilt/etc/post-boot.sh:system/etc/post-boot.sh \
+        $(LOCAL_PATH)/ramdisk/bin/sysinit:system/bin/sysinit
+
+# GPU OC scripts
+PRODUCT_COPY_FILES += \
+        $(LOCAL_PATH)/prebuilt/etc/gpu_oc_on:system/etc/gpu_oc_on \
+        $(LOCAL_PATH)/prebuilt/etc/gpu_oc_off:system/etc/gpu_oc_off
 		
 # Permissions
 PRODUCT_COPY_FILES += \
@@ -161,9 +170,9 @@ PRODUCT_COPY_FILES += \
         frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
         frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
         frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
+        frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
         frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
 	packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
-
 
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/prebuilt/usr/idc/atmel-maxtouch.idc:system/usr/idc/atmel-maxtouch.idc \
@@ -178,16 +187,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.sf.lcd_density=320 \
 	persist.sys.usb.config=mtp,adb \
-	ro.telephony.ril_class=QualcommSharedRIL \
+	ro.adb.secure=0 \
         ro.product.manufacturer=HTC
 
 $(call inherit-product-if-exists, hardware/ti/wan/mac80211/Android.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product-if-exists, vendor/htc/endeavoru/endeavoru-vendor.mk)
 $(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
-
-# Device Naming
-PRODUCT_NAME := full_endeavoru
-PRODUCT_DEVICE := endeavoru
-PRODUCT_BRAND := htc_europe
-PRODUCT_MODEL := EndeavorU

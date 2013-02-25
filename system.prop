@@ -116,8 +116,11 @@ debug.sf.hw=1
 ro.media.dec.jpeg.memcap=8000000
 ro.media.enc.jpeg.quality=100
 dalvik.vm.execution-mode=int:jit
-persist.sys.use_dithering=1
 dalvik.vm.dexopt-flags=m=y
+windowsmgr.max_events_per_sec = 240
+
+# force gpu rendering(2d drawing) [Nvidia setting - libhtc-opt2.so]
+persist.sys.ui.hw=true
 
 #Certain apps like chrome in play store check and need this
 ro.opengles.version = 131072
@@ -128,15 +131,27 @@ ro.vold.umsdirtyratio=50
 #export for SoundHound
 persist.htc.audio.pcm.samplerate=48000
 persist.htc.audio.pcm.channels=2
-# Temporary MHL rotation fix
+
+#HDMI
+ro.hdmi.enable=true
+# temporary fix for HDMI output, for videos it works now in correct landscape with this set
 persist.demo.hdmirotation=portrait
 
 # Addidional info for Settings/About/Hardware
-ro.device.cpu=nVidia Tegra 3, Quad-core 1.5 GHz
+ro.device.chipset=Nvidia Tegra 3
+ro.device.cpu=1.5GHz quad-core Cortex-A9
 ro.device.gpu=ULP GeForce
 ro.device.front_cam=1.3MP, 720p
 ro.device.rear_cam=8MP, 1080p
 ro.device.screen_res=720 x 1280 pixels, 4.7"
+
+#ICJ rom info
+ro.icj.version=V2.2 Test version
+ro.icj.dev=LorD ClockaN
+ro.icj.kernel=n3ocort3x
+ro.icj.themer=TUN_SD
+ro.icj.maintester=semdoc
+ro.icj.tester=icke
 
 # RC: cahrging LED always ON
 persist.sys.enable-charging-led=1
